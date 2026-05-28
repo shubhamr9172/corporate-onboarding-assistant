@@ -52,9 +52,9 @@ jobs:
         # Skip DeepEval tests if Google API key is missing (for fork PRs)
         if [ -z "$GOOGLE_API_KEY" ]; then
           logger -s "Warning: GOOGLE_API_KEY missing. Skipping LLM-based assertions."
-          pytest -v --ignore=tests/test_evals.py
+          python -m pytest -v --ignore=tests/test_evals.py
         else
-          pytest -v
+          python -m pytest -v
         fi
 
     - name: Run Developer Auditor Agent Audit
