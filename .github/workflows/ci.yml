@@ -1,0 +1,101 @@
+name: CI/CD Pipeline - Onboarding Assistant V2
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-and-audit:
+    runs-on: ubuntu-latest
+    
+    # Configure Redis service container inside the GitHub runner
+    services:
+      redis:
+        image: redis:7.2-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - name: Checkout Codebase
+      uses: actions/checkout@v4
+
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install black flake8
+        pip install -r requirements.txt
+
+    - name: Code Formatting Check (Black)
+      run: black --check . --exclude .venv
+
+    - name: Linting Check (Flake8)
+      run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude=.venv
+
+    - name: Run Unit & Quality Tests (Pytest)
+      env:
+        GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        REDIS_URL: redis://localhost:6379/0
+      run: |
+        # Skip DeepEval tests if Google API key is missing (for fork PRs)
+        if [ -z "$GOOGLE_API_KEY" ]; then
+          logger -s "Warning: GOOGLE_API_KEY missing. Skipping LLM-based assertions."
+          pytest -v --ignore=tests/test_evals.py
+        else
+          pytest -v
+        fi
+
+    - name: Run Developer Auditor Agent Audit
+      env:
+        GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+      run: |
+        if [ -n "$GOOGLE_API_KEY" ]; then
+          python agents/auditor.py
+        else
+          echo "Warning: GOOGLE_API_KEY missing. Skipping developer audit run."
+        fi
+
+  publish-docker:
+    needs: test-and-audit
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - name: Checkout Codebase
+      uses: actions/checkout@v4
+
+    - name: Log in to GitHub Container Registry (GHCR)
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Extract metadata (tags, labels) for Docker
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ghcr.io/${{ github.repository }}
+
+    - name: Build and Push Docker Image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}

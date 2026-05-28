@@ -1,0 +1,1048 @@
+/* =============================================================================
+   GRADIENT AURORA THEME — Corporate Onboarding Assistant V2
+   Matched to Stitch Design Output
+   Colors: Deep purple-black base, lavender-purple-gold aurora gradients
+   ============================================================================= */
+
+/* ---------- Google Fonts ---------- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+
+/* ---------- CSS Custom Properties (matched to Stitch design tokens) ---------- */
+:root {
+    /* Surface hierarchy */
+    --au-bg:                  #141218;
+    --au-surface-lowest:      #0f0d13;
+    --au-surface-low:         #1d1b20;
+    --au-surface-container:   #211f24;
+    --au-surface-high:        #2b292f;
+    --au-surface-highest:     #36343a;
+    --au-surface-variant:     #36343a;
+
+    /* Brand colors */
+    --au-primary:             #cfbcff;
+    --au-primary-container:   #6750a4;
+    --au-on-primary:          #381e72;
+    --au-on-primary-container:#e0d2ff;
+    --au-secondary:           #cdc0e9;
+    --au-secondary-container: #4d4465;
+    --au-tertiary:            #e7c365;
+    --au-tertiary-container:  #c9a74d;
+
+    /* Text colors */
+    --au-on-surface:          #e6e0e9;
+    --au-on-surface-variant:  #cbc4d2;
+    --au-outline:             #948e9c;
+    --au-outline-variant:     #494551;
+
+    /* Status */
+    --au-error:               #ffb4ab;
+    --au-error-container:     #93000a;
+    --au-emerald:             #10b981;
+    --au-amber:               #e7c365;
+
+    /* Gradients */
+    --au-aurora:              linear-gradient(135deg, #6750a4 0%, #381e72 50%, #141218 100%);
+    --au-aurora-text:         linear-gradient(to right, #cfbcff, #6750a4, #e7c365);
+    --au-aurora-border:       linear-gradient(to right, #cfbcff, #6750a4);
+    --au-gradient-subtle:     linear-gradient(135deg, rgba(103,80,164,0.12) 0%, rgba(56,30,114,0.08) 100%);
+
+    /* Effects */
+    --au-glow:                0 0 20px rgba(207, 188, 255, 0.15), 0 0 60px rgba(103, 80, 164, 0.08);
+    --au-glass-bg:            rgba(255, 255, 255, 0.03);
+    --au-glass-border:        rgba(255, 255, 255, 0.08);
+
+    /* Shape & Motion */
+    --au-radius:              12px;
+    --au-radius-sm:           8px;
+    --au-radius-lg:           16px;
+    --au-radius-xl:           20px;
+    --au-transition:          all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ---------- Global Reset & Base ---------- */
+html, body, .stApp,
+[data-testid="stAppViewContainer"],
+[data-testid="stAppViewBlockContainer"],
+.main .block-container,
+[data-testid="stMainBlockContainer"],
+section[data-testid="stSidebar"],
+[data-testid="stMain"],
+.stApp > header,
+.appview-container {
+    background-color: var(--au-bg) !important;
+    color: var(--au-on-surface) !important;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+}
+
+.stApp {
+    background: var(--au-bg) !important;
+}
+
+/* Ambient aurora glow at top */
+[data-testid="stMain"]::before {
+    content: '';
+    position: fixed;
+    top: -20%;
+    right: -10%;
+    width: 50%;
+    height: 50%;
+    background: radial-gradient(ellipse, rgba(103,80,164,0.10) 0%, transparent 70%);
+    filter: blur(120px);
+    pointer-events: none;
+    z-index: 0;
+}
+
+[data-testid="stMain"]::after {
+    content: '';
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 40%;
+    height: 40%;
+    background: radial-gradient(ellipse, rgba(205,192,233,0.05) 0%, transparent 70%);
+    filter: blur(100px);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ---------- Hide Streamlit Chrome ---------- */
+#MainMenu, footer, header[data-testid="stHeader"] {
+    visibility: hidden !important;
+    height: 0 !important;
+    overflow: hidden !important;
+}
+
+[data-testid="stToolbar"],
+[data-testid="stDecoration"] {
+    display: none !important;
+}
+
+/* ---------- Scrollbar ---------- */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--au-surface-highest); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--au-outline-variant); }
+
+/* =============================================================================
+   SIDEBAR
+   ============================================================================= */
+
+[data-testid="stSidebar"] {
+    background: var(--au-surface-lowest) !important;
+    border-right: 1px solid rgba(73, 69, 81, 0.2) !important;
+    box-shadow: 4px 0 24px rgba(0,0,0,0.3) !important;
+}
+
+[data-testid="stSidebar"] > div:first-child {
+    background: var(--au-surface-lowest) !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stVerticalBlock"] {
+    gap: 0.2rem !important;
+}
+
+/* Sidebar text */
+[data-testid="stSidebar"] .stMarkdown p,
+[data-testid="stSidebar"] .stMarkdown li {
+    color: var(--au-on-surface-variant) !important;
+    font-size: 0.875rem !important;
+}
+
+[data-testid="stSidebar"] .stMarkdown h1,
+[data-testid="stSidebar"] .stMarkdown h2,
+[data-testid="stSidebar"] .stMarkdown h3 {
+    color: var(--au-on-surface) !important;
+    font-weight: 600 !important;
+    letter-spacing: -0.01em !important;
+}
+
+/* Sidebar dividers — hide them, we use custom sections */
+[data-testid="stSidebar"] hr {
+    border-color: rgba(73, 69, 81, 0.15) !important;
+    margin: 0.5rem 0 !important;
+}
+
+/* Sidebar caption */
+[data-testid="stSidebar"] [data-testid="stCaptionContainer"] p {
+    color: var(--au-outline) !important;
+    font-size: 0.7rem !important;
+    font-family: 'JetBrains Mono', monospace !important;
+}
+
+/* =============================================================================
+   BUTTONS
+   ============================================================================= */
+
+.stButton > button {
+    background: var(--au-surface-low) !important;
+    color: var(--au-on-surface-variant) !important;
+    border: 1px solid rgba(73, 69, 81, 0.3) !important;
+    border-radius: var(--au-radius-sm) !important;
+    font-family: 'Inter', sans-serif !important;
+    font-weight: 500 !important;
+    font-size: 0.82rem !important;
+    padding: 0.5rem 1rem !important;
+    transition: var(--au-transition) !important;
+    letter-spacing: 0.01em !important;
+}
+
+.stButton > button:hover {
+    border-color: rgba(207, 188, 255, 0.5) !important;
+    color: var(--au-primary) !important;
+    background: var(--au-surface-container) !important;
+    box-shadow: none !important;
+}
+
+.stButton > button:active {
+    transform: scale(0.98) !important;
+}
+
+/* Sidebar buttons */
+[data-testid="stSidebar"] .stButton {
+    margin-top: 0.5rem !important;
+}
+
+[data-testid="stSidebar"] .stButton > button {
+    background: transparent !important;
+    border: 1px solid rgba(73, 69, 81, 0.3) !important;
+    width: 100% !important;
+    justify-content: flex-start !important;
+    gap: 0.5rem !important;
+}
+
+[data-testid="stSidebar"] .stButton > button:hover {
+    border-color: rgba(207, 188, 255, 0.5) !important;
+    color: var(--au-primary) !important;
+}
+
+/* Feedback buttons (thumbs) */
+[data-testid="stHorizontalBlock"] .stButton > button {
+    padding: 0.3rem 0.6rem !important;
+    font-size: 1rem !important;
+    border-radius: var(--au-radius-sm) !important;
+    min-height: unset !important;
+    line-height: 1 !important;
+    background: transparent !important;
+    border: none !important;
+}
+
+[data-testid="stHorizontalBlock"] .stButton > button:hover {
+    color: var(--au-primary) !important;
+    background: rgba(103, 80, 164, 0.15) !important;
+}
+
+/* Form submit */
+[data-testid="stForm"] button[type="submit"],
+[data-testid="stFormSubmitButton"] button {
+    background: var(--au-aurora) !important;
+    color: white !important;
+    border: none !important;
+    font-weight: 600 !important;
+    border-radius: var(--au-radius-sm) !important;
+}
+
+/* =============================================================================
+   SELECT BOX
+   ============================================================================= */
+
+[data-testid="stSidebar"] .stSelectbox {
+    margin-top: 0.75rem !important;
+    margin-bottom: 0.75rem !important;
+}
+
+[data-testid="stSidebar"] .stSelectbox > div > div {
+    background: var(--au-surface-container) !important;
+    border: 1px solid var(--au-outline-variant) !important;
+    border-radius: var(--au-radius-sm) !important;
+    color: var(--au-on-surface) !important;
+}
+
+[data-testid="stSidebar"] .stSelectbox > div > div:hover {
+    border-color: rgba(207, 188, 255, 0.4) !important;
+}
+
+[data-testid="stSidebar"] .stSelectbox label {
+    color: var(--au-on-surface-variant) !important;
+    font-size: 0.8rem !important;
+}
+
+/* Dropdown menu */
+[data-baseweb="popover"] {
+    background: var(--au-surface-container) !important;
+    border: 1px solid var(--au-outline-variant) !important;
+    border-radius: var(--au-radius-sm) !important;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.5) !important;
+}
+
+[data-baseweb="popover"] li {
+    color: var(--au-on-surface) !important;
+    background: transparent !important;
+}
+
+[data-baseweb="popover"] li:hover {
+    background: rgba(103, 80, 164, 0.2) !important;
+}
+
+[data-baseweb="popover"] li[aria-selected="true"] {
+    background: rgba(103, 80, 164, 0.3) !important;
+}
+
+/* =============================================================================
+   CHECKBOXES
+   ============================================================================= */
+
+[data-testid="stSidebar"] .stCheckbox label {
+    color: var(--au-on-surface-variant) !important;
+    font-size: 0.82rem !important;
+}
+
+[data-testid="stSidebar"] .stCheckbox input:checked + div {
+    background: var(--au-primary-container) !important;
+    border-color: transparent !important;
+}
+
+/* =============================================================================
+   METRICS
+   ============================================================================= */
+
+[data-testid="stMetric"] {
+    background: var(--au-surface-container) !important;
+    border: 1px solid rgba(73, 69, 81, 0.1) !important;
+    border-radius: var(--au-radius-sm) !important;
+    padding: 0.75rem !important;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.1) !important;
+}
+
+[data-testid="stMetric"] label {
+    color: var(--au-on-surface-variant) !important;
+    font-size: 0.65rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    font-weight: 500 !important;
+}
+
+[data-testid="stMetric"] [data-testid="stMetricValue"] {
+    color: var(--au-primary) !important;
+    font-size: 1.1rem !important;
+    font-weight: 700 !important;
+}
+
+/* =============================================================================
+   MAIN CONTENT AREA TITLES
+   ============================================================================= */
+
+.main .stMarkdown h1 {
+    font-family: 'Inter', sans-serif !important;
+    font-weight: 700 !important;
+    font-size: 3rem !important;
+    letter-spacing: -0.02em !important;
+    background: var(--au-aurora-text);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.15 !important;
+}
+
+.main .stMarkdown h2 {
+    color: var(--au-on-surface) !important;
+    font-weight: 600 !important;
+    font-size: 1.3rem !important;
+}
+
+.main .stMarkdown p {
+    color: var(--au-on-surface-variant) !important;
+    line-height: 1.6 !important;
+}
+
+/* =============================================================================
+   CHAT MESSAGES
+   ============================================================================= */
+
+[data-testid="stChatMessage"] {
+    background: transparent !important;
+    border: none !important;
+    padding: 0.75rem 0 !important;
+}
+
+/* User message — styled like Stitch: primary-container bg, rounded with cut corner */
+[data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-user"]) {
+    background: var(--au-primary-container) !important;
+    color: var(--au-on-primary-container) !important;
+    border-radius: var(--au-radius-lg) 4px var(--au-radius-lg) var(--au-radius-lg) !important;
+    padding: 0.85rem 1.15rem !important;
+    margin-bottom: 0.4rem !important;
+    margin-left: auto !important;
+    max-width: 70% !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25) !important;
+}
+
+/* Assistant message — glass card with primary left border */
+[data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-assistant"]) {
+    background: rgba(43, 41, 47, 0.6) !important;
+    backdrop-filter: blur(12px) !important;
+    border-left: 2px solid var(--au-primary) !important;
+    border-radius: 4px var(--au-radius-lg) var(--au-radius-lg) var(--au-radius-lg) !important;
+    padding: 1.15rem !important;
+    margin-bottom: 0.4rem !important;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.2) !important;
+}
+
+/* Chat avatars */
+[data-testid="chatAvatarIcon-user"] {
+    background: var(--au-primary-container) !important;
+    border: 1px solid rgba(207, 188, 255, 0.2) !important;
+}
+
+[data-testid="chatAvatarIcon-assistant"] {
+    background: var(--au-aurora) !important;
+    box-shadow: 0 4px 12px rgba(103,80,164,0.3) !important;
+}
+
+/* Message text */
+[data-testid="stChatMessage"] .stMarkdown p {
+    color: var(--au-on-surface) !important;
+    font-size: 0.9rem !important;
+    line-height: 1.65 !important;
+}
+
+[data-testid="stChatMessage"] .stMarkdown li {
+    color: var(--au-on-surface-variant) !important;
+}
+
+[data-testid="stChatMessage"] .stMarkdown strong {
+    color: var(--au-on-surface) !important;
+    font-weight: 600 !important;
+}
+
+[data-testid="stChatMessage"] .stMarkdown code {
+    background: rgba(103, 80, 164, 0.2) !important;
+    color: var(--au-primary) !important;
+    padding: 0.15em 0.4em !important;
+    border-radius: 4px !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 0.85em !important;
+}
+
+/* =============================================================================
+   CHAT INPUT — Gradient border card (matches Stitch gradient-border pattern)
+   ============================================================================= */
+
+[data-testid="stChatInput"] {
+    background: transparent !important;
+    border-top: none !important;
+}
+
+[data-testid="stChatInput"] > div {
+    background: var(--au-surface-low) !important;
+    border: 1px solid var(--au-outline-variant) !important;
+    border-radius: var(--au-radius) !important;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Gradient border effect on the input wrapper */
+[data-testid="stChatInput"] > div::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 13px;
+    padding: 1px;
+    background: var(--au-aurora-border);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+}
+
+[data-testid="stChatInput"] > div:focus-within::before {
+    opacity: 1;
+    box-shadow: 0 0 30px rgba(207, 188, 255, 0.15);
+}
+
+[data-testid="stChatInput"] textarea {
+    background: transparent !important;
+    color: var(--au-on-surface) !important;
+    border: none !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 0.9rem !important;
+    caret-color: var(--au-primary) !important;
+}
+
+[data-testid="stChatInput"] textarea::placeholder {
+    color: rgba(203, 196, 210, 0.5) !important;
+}
+
+/* Send button */
+[data-testid="stChatInput"] button {
+    background: var(--au-aurora) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: var(--au-radius-sm) !important;
+    box-shadow: 0 4px 12px rgba(103, 80, 164, 0.3) !important;
+    transition: var(--au-transition) !important;
+}
+
+[data-testid="stChatInput"] button:hover {
+    transform: scale(1.05) !important;
+}
+
+[data-testid="stChatInput"] button:active {
+    transform: scale(0.95) !important;
+}
+
+/* =============================================================================
+   EXPANDERS (Source Citations)
+   ============================================================================= */
+
+[data-testid="stExpander"] {
+    background: rgba(103, 80, 164, 0.05) !important;
+    border: 1px solid rgba(73, 69, 81, 0.2) !important;
+    border-radius: var(--au-radius-sm) !important;
+}
+
+[data-testid="stExpander"]:hover {
+    border-color: rgba(207, 188, 255, 0.3) !important;
+}
+
+[data-testid="stExpander"] summary {
+    color: var(--au-primary) !important;
+    font-weight: 600 !important;
+    font-size: 0.82rem !important;
+}
+
+[data-testid="stExpander"] [data-testid="stExpanderDetails"] {
+    background: rgba(0,0,0,0.15) !important;
+    border-top: 1px solid rgba(73, 69, 81, 0.2) !important;
+}
+
+/* =============================================================================
+   FORMS (Feedback form)
+   ============================================================================= */
+
+[data-testid="stForm"] {
+    background: var(--au-surface-container) !important;
+    border: 1px solid rgba(73, 69, 81, 0.2) !important;
+    border-radius: var(--au-radius) !important;
+    padding: 1.15rem !important;
+}
+
+[data-testid="stForm"] input[type="text"],
+[data-testid="stForm"] textarea {
+    background: var(--au-surface-lowest) !important;
+    color: var(--au-on-surface) !important;
+    border: 1px solid var(--au-outline-variant) !important;
+    border-radius: var(--au-radius-sm) !important;
+}
+
+[data-testid="stForm"] input:focus,
+[data-testid="stForm"] textarea:focus {
+    border-color: var(--au-primary-container) !important;
+    box-shadow: 0 0 0 2px rgba(103, 80, 164, 0.15) !important;
+}
+
+[data-testid="stForm"] label {
+    color: var(--au-on-surface-variant) !important;
+    font-size: 0.82rem !important;
+}
+
+/* =============================================================================
+   ALERTS — Stitch style
+   ============================================================================= */
+
+.stSuccess, [data-baseweb*="positive"] {
+    background: rgba(16, 185, 129, 0.08) !important;
+    border: 1px solid rgba(16, 185, 129, 0.2) !important;
+    border-radius: var(--au-radius-sm) !important;
+    color: var(--au-emerald) !important;
+}
+
+.stException, div[role="alert"], .stError {
+    background: rgba(255, 180, 171, 0.08) !important;
+    border: 1px solid rgba(147, 0, 10, 0.3) !important;
+    border-radius: var(--au-radius-sm) !important;
+    color: var(--au-error) !important;
+}
+
+.stWarning {
+    background: rgba(231, 195, 101, 0.08) !important;
+    border: 1px solid rgba(201, 167, 77, 0.3) !important;
+    border-radius: var(--au-radius-sm) !important;
+    color: var(--au-tertiary) !important;
+}
+
+/* =============================================================================
+   SPINNER
+   ============================================================================= */
+
+.stSpinner > div {
+    border-top-color: var(--au-primary) !important;
+}
+
+[data-testid="stSpinner"] > div > span {
+    color: var(--au-on-surface-variant) !important;
+}
+
+/* =============================================================================
+   CUSTOM HTML COMPONENTS — Sidebar
+   ============================================================================= */
+
+/* Brand */
+.aurora-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 0 0.75rem 0;
+}
+
+.aurora-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--au-aurora);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 16px rgba(103, 80, 164, 0.2);
+    flex-shrink: 0;
+}
+
+.aurora-brand-name {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--au-primary);
+    letter-spacing: -0.03em;
+    line-height: 1;
+}
+
+.aurora-brand-sub {
+    font-size: 0.68rem;
+    color: var(--au-outline);
+    font-weight: 400;
+    margin-top: 0.15rem;
+}
+
+/* Profile card — glass effect */
+.aurora-user-card {
+    background: var(--au-glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--au-glass-border);
+    border-radius: var(--au-radius);
+    padding: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0.4rem 0;
+}
+
+.aurora-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--au-primary-container);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--au-on-primary-container);
+    border: 1px solid rgba(207, 188, 255, 0.2);
+    flex-shrink: 0;
+}
+
+.aurora-user-name {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--au-on-surface);
+}
+
+.aurora-role-badge {
+    display: inline-flex;
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+    background: var(--au-primary-container);
+    color: var(--au-on-primary-container);
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    width: fit-content;
+    margin-top: 0.15rem;
+}
+
+/* Section labels */
+.aurora-section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--au-on-surface-variant);
+    padding: 0.6rem 0.5rem 0.3rem 0.5rem;
+}
+
+.aurora-section-header .icon {
+    font-size: 0.8rem;
+}
+
+/* Progress bar */
+.aurora-progress-bar-wrap {
+    padding: 0 0.25rem;
+}
+
+.aurora-progress-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.35rem;
+}
+
+.aurora-progress-label {
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--au-on-surface-variant);
+}
+
+.aurora-progress-pct {
+    font-size: 0.62rem;
+    font-weight: 700;
+    color: var(--au-primary);
+}
+
+.aurora-progress-bar {
+    width: 100%;
+    height: 6px;
+    background: var(--au-surface-highest);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.aurora-progress-fill {
+    height: 100%;
+    background: linear-gradient(to right, var(--au-primary), var(--au-secondary));
+    border-radius: 999px;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 10px rgba(207, 188, 255, 0.3);
+}
+
+/* Nav items — matches Stitch sidebar nav */
+.aurora-nav-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.65rem 0.85rem;
+    border-radius: var(--au-radius-sm);
+    transition: var(--au-transition);
+    cursor: default;
+    margin: 0.1rem 0;
+}
+
+.aurora-nav-item:hover {
+    background: var(--au-surface-high);
+}
+
+.aurora-nav-item .nav-left {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+.aurora-nav-item .nav-icon {
+    font-size: 1.15rem;
+    color: var(--au-on-surface-variant);
+}
+
+.aurora-nav-item .nav-label {
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--au-on-surface-variant);
+}
+
+.aurora-nav-item .nav-status {
+    font-size: 1rem;
+    color: var(--au-primary);
+}
+
+/* Done state */
+.aurora-nav-item.done {
+    background: rgba(103, 80, 164, 0.08);
+}
+
+.aurora-nav-item.done .nav-icon {
+    color: var(--au-primary);
+}
+
+.aurora-nav-item.done .nav-label {
+    color: var(--au-on-primary-container);
+}
+
+/* Current/active state */
+.aurora-nav-item.current {
+    background: var(--au-primary-container);
+    color: var(--au-on-primary-container);
+    box-shadow: 0 8px 24px rgba(103, 80, 164, 0.1);
+}
+
+.aurora-nav-item.current .nav-icon,
+.aurora-nav-item.current .nav-label {
+    color: var(--au-on-primary-container);
+}
+
+.aurora-nav-item.current .nav-label {
+    font-weight: 700;
+}
+
+.aurora-nav-item.current .pulse-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: white;
+    animation: aurora-pulse 2s ease-in-out infinite;
+}
+
+/* Upcoming state */
+.aurora-nav-item.upcoming .nav-label {
+    color: var(--au-outline);
+}
+
+.aurora-nav-item.upcoming .nav-icon {
+    color: var(--au-outline);
+}
+
+/* Metrics row */
+.aurora-metrics-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    padding: 0.15rem 0.15rem;
+    margin: 0.2rem 0 0.8rem 0;
+}
+
+.aurora-metric-card {
+    background: var(--au-surface-container);
+    border: 1px solid rgba(73, 69, 81, 0.1);
+    border-radius: var(--au-radius-sm);
+    padding: 0.65rem 0.75rem;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.aurora-metric-label {
+    font-size: 0.62rem;
+    font-weight: 500;
+    color: var(--au-on-surface-variant);
+    margin-bottom: 0.2rem;
+}
+
+.aurora-metric-value {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--au-primary);
+}
+
+.aurora-metric-value.secondary {
+    color: var(--au-secondary);
+}
+
+/* Session badge */
+.aurora-session-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.65rem;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--au-on-surface-variant);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.aurora-session-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--au-emerald);
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+}
+
+/* =============================================================================
+   CUSTOM HTML COMPONENTS — Main Area
+   ============================================================================= */
+
+/* Hero welcome */
+.aurora-hero {
+    text-align: center;
+    padding: 3rem 0 1rem 0;
+}
+
+.aurora-hero-greeting {
+    font-size: 3rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    background: var(--au-aurora-text);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+}
+
+.aurora-hero-sub {
+    font-size: 1rem;
+    color: var(--au-on-surface-variant);
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* Suggestion cards — matches Stitch grid cards with left border */
+.aurora-suggestions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    padding: 1.5rem 0;
+}
+
+.aurora-chip {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    border-radius: var(--au-radius);
+    background: var(--au-surface-container);
+    border-left: 4px solid var(--au-primary);
+    color: var(--au-on-surface);
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: var(--au-transition);
+    cursor: default;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    line-height: 1.4;
+}
+
+.aurora-chip:nth-child(2) { border-left-color: var(--au-secondary); }
+.aurora-chip:nth-child(3) { border-left-color: var(--au-tertiary); }
+.aurora-chip:nth-child(4) { border-left-color: var(--au-primary); }
+
+.aurora-chip:hover {
+    background: var(--au-surface-high);
+    transform: scale(0.98);
+}
+
+.aurora-chip-category {
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--au-on-surface-variant);
+    margin-bottom: 0.3rem;
+    text-transform: capitalize;
+}
+
+.aurora-chip-text {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--au-on-surface);
+    line-height: 1.35;
+}
+
+/* Compact header (when chat active) */
+.aurora-compact-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0 0.75rem 0;
+}
+
+.aurora-compact-title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    background: var(--au-aurora-text);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Footer text */
+.aurora-footer {
+    text-align: center;
+    padding: 0.75rem 0 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: rgba(203, 196, 210, 0.3);
+}
+
+/* =============================================================================
+   ANIMATIONS
+   ============================================================================= */
+
+@keyframes aurora-pulse {
+    0%, 100% { box-shadow: 0 0 8px rgba(255, 255, 255, 0.5); }
+    50% { box-shadow: 0 0 16px rgba(255, 255, 255, 0.8), 0 0 32px rgba(255, 255, 255, 0.3); }
+}
+
+/* =============================================================================
+   RESPONSIVE
+   ============================================================================= */
+
+@media (max-width: 768px) {
+    .aurora-hero-greeting { font-size: 1.5rem; }
+    .aurora-suggestions { grid-template-columns: 1fr; }
+    .aurora-metrics-row { grid-template-columns: 1fr; }
+}
+
+/* =============================================================================
+   LAYOUT OVERRIDES
+   ============================================================================= */
+
+.main .block-container {
+    padding: 1rem 2rem 6rem 2rem !important;
+    max-width: 900px !important;
+}
+
+/* Text inputs globally */
+.stTextInput input {
+    background: var(--au-surface-lowest) !important;
+    color: var(--au-on-surface) !important;
+    border: 1px solid var(--au-outline-variant) !important;
+    border-radius: var(--au-radius-sm) !important;
+}
+
+.stTextInput input:focus {
+    border-color: var(--au-primary-container) !important;
+    box-shadow: 0 0 0 2px rgba(103, 80, 164, 0.15) !important;
+}
+
+[data-testid="stHorizontalBlock"] {
+    gap: 0.5rem !important;
+}
+
+/* Code blocks */
+.stMarkdown pre {
+    background: var(--au-surface-lowest) !important;
+    border: 1px solid rgba(73, 69, 81, 0.2) !important;
+    border-radius: var(--au-radius-sm) !important;
+}
+
+.stMarkdown pre code {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 0.82rem !important;
+    color: var(--au-on-surface) !important;
+}
+
+/* Material Symbols icon support */
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    font-family: 'Material Symbols Outlined' !important;
+}
+
+.material-filled {
+    font-variation-settings: 'FILL' 1;
+}

@@ -1,0 +1,9 @@
+================================================================================
+[Category: Policy]
+Topic: Leave Policy (Sick, Casual, Earned Leaves)
+Employees are entitled to 24 days of paid leave per calendar year, which includes:
+- 12 days of Earned Leave (EL), accrued monthly.
+- 6 days of Sick Leave (SL).
+- 6 days of Casual Leave (CL).
+Maternity leave is 26 weeks, and paternity leave is 2 weeks. All leave requests must be submitted in the HRMS at least 3 days in advance and approved by your manager.
+================================================================================

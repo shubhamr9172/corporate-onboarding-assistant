@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: onboarding_assistant_web
+    ports:
+      - "8501:8501"
+    environment:
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - LANGCHAIN_TRACING_V2=${LANGCHAIN_TRACING_V2}
+      - LANGSMITH_API_KEY=${LANGSMITH_API_KEY}
+      - LANGSMITH_PROJECT=${LANGSMITH_PROJECT}
+      - REDIS_URL=redis://redis:6379/0
+      - LOG_FORMAT=JSON
+      - LOG_LEVEL=INFO
+    volumes:
+      - ./data:/app/data
+      - ./chroma_db:/app/chroma_db
+      - ./onboarding_history.db:/app/onboarding_history.db
+      - ./feedback_history.db:/app/feedback_history.db
+    depends_on:
+      - redis
+    restart: always
+
+  redis:
+    image: redis:7.2-alpine
+    container_name: onboarding_assistant_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --save 60 1 --loglevel warning
+    restart: always
+
+volumes:
+  redis_data:

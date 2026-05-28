@@ -1,0 +1,31 @@
+# Virtual Environment
+.venv/
+venv/
+ENV/
+
+# Environment Variables
+.env
+.env.local
+
+# Python Caches
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Local Databases & Indexes
+chroma_db/
+onboarding_history.db
+feedback_history.db
+*.db
+
+# Local Reports & IDE Settings
+audit_report.json
+.vscode/
+.idea/
+.DS_Store
+
+# Credentials Config
+auth_config.yaml
+

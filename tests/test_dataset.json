@@ -1,0 +1,38 @@
+[
+  {
+    "input": "How do I request write or admin access to Jira?",
+    "query": "How do I request write or admin access to Jira?",
+    "expected_topic": "IT Setup",
+    "expected_answer": "Request access through ServiceNow Portal -> Request Catalog -> 'Jira & Confluence Access Request'. Provide the project keys and required access level (User, Contributor, or Project Administrator). Line Manager or Project Admin approval is required."
+  },
+  {
+    "input": "How can I access development servers?",
+    "query": "How can I access development servers?",
+    "expected_topic": "IT Setup",
+    "expected_answer": "Submit a request on the ServiceNow Portal under 'Server Access - Non-Prod'. Provide hostnames/IPs, public SSH Key (no passwords allowed), and a justification. Connect via the Linux or Windows bastion host."
+  },
+  {
+    "input": "What is the policy for write access to production databases?",
+    "query": "What is the policy for write access to production databases?",
+    "expected_topic": "Policy",
+    "expected_answer": "Production database write access is strictly limited to CI/CD migration scripts. Direct write queries by developers are prohibited."
+  },
+  {
+    "input": "How do I request access to a shared mailbox?",
+    "query": "How do I request access to a shared mailbox?",
+    "expected_topic": "IT Setup",
+    "expected_answer": "Submit a request in ServiceNow under 'Request Access to Shared Mailbox' with the mailbox email, required permissions (Read and Write, Send on Behalf, or Read-Only), which requires approval from the Mailbox Custodian."
+  },
+  {
+    "input": "What is MakeMeAdmin used for and how long does it last?",
+    "query": "What is MakeMeAdmin used for and how long does it last?",
+    "expected_topic": "Policy",
+    "expected_answer": "MakeMeAdmin is used to temporarily grant local administrator access on corporate laptops for installing software or modifying settings. The privilege escalation lasts for 30 minutes."
+  },
+  {
+    "input": "How do I set up my SSH key for cloning corporate GitHub repos?",
+    "query": "How do I set up my SSH key for cloning corporate GitHub repos?",
+    "expected_topic": "IT Setup",
+    "expected_answer": "Generate an SSH key with `ssh-keygen -t ed25519 -C 'your.email@corporate.com'`, add the public key (`~/.ssh/id_ed25519.pub`) to your GitHub Profile -> Settings -> SSH and GPG keys, and test the connection using `ssh -T git@github.com`."
+  }
+]

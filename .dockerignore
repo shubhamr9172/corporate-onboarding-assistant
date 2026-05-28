@@ -1,0 +1,36 @@
+# Secrets & Environment
+.env
+.env.*
+.env.example
+
+# Git history (contains old secrets)
+.git/
+.gitignore
+
+# Python caches
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.venv/
+venv/
+ENV/
+.deepeval/
+
+# Local databases (contain user PII)
+*.db
+*.db-shm
+*.db-wal
+chroma_db/
+
+# Reports & dev artifacts
+audit_report.json
+codebase_context.md
+test_book.md
+README.md
+
+# IDE & tooling
+.vscode/
+.idea/
+.DS_Store
+.stitch/
