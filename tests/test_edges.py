@@ -1,6 +1,7 @@
 import pytest
 from graph.edges import route_after_cache, route_after_intent, route_after_confidence
 
+
 def test_route_after_cache():
     # Cache hit
     state_hit = {"route_decision": "cache_hit"}
@@ -14,6 +15,7 @@ def test_route_after_cache():
     state_empty = {}
     assert route_after_cache(state_empty) == "intent_node"
 
+
 def test_route_after_intent():
     # Out of scope
     state_oos = {"intent": "OutOfScope"}
@@ -26,6 +28,7 @@ def test_route_after_intent():
     # Default fallback
     state_empty = {}
     assert route_after_intent(state_empty) == "rag_node"
+
 
 def test_route_after_confidence():
     # Escalate

@@ -11,7 +11,9 @@ root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 dotenv_path = os.path.join(root_dir, ".env")
 load_dotenv(dotenv_path=dotenv_path)
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 logger = logging.getLogger("app.auditor")
 
 AUDIT_PROMPT = """
@@ -44,6 +46,7 @@ Source Code Files:
 {source_code}
 """
 
+
 def load_codebase(root_dir: str) -> str:
     """Reads project code files and formats them into a single string for audit."""
     target_files = [
@@ -55,9 +58,9 @@ def load_codebase(root_dir: str) -> str:
         "rag/ingest.py",
         "rag/retriever.py",
         "guardrails/guard.py",
-        "app.py"
+        "app.py",
     ]
-    
+
     code_text = ""
     for rel_path in target_files:
         abs_path = os.path.join(root_dir, rel_path)
@@ -70,24 +73,25 @@ def load_codebase(root_dir: str) -> str:
                 logger.error(f"Failed to read file {rel_path} for audit: {e}")
         else:
             logger.warning(f"File {rel_path} not found. Skipping in audit.")
-            
+
     return code_text
+
 
 def run_audit():
     """Runs the LLM-based codebase audit and writes audit_report.json."""
     root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    
+
     logger.info("Gathering codebase source files...")
     source_code = load_codebase(root_dir)
     if not source_code:
         logger.error("No source code loaded. Audit cancelled.")
         return
-        
+
     google_key = os.getenv("GOOGLE_API_KEY")
     if not google_key:
         logger.error("GOOGLE_API_KEY is not set. Auditor agent cannot execute.")
         return
-        
+
     logger.info("Invoking Gemini 2.5 Flash Auditor Agent...")
     try:
         # Initialize Gemini 2.5 Flash Model
@@ -95,34 +99,41 @@ def run_audit():
             model="gemini-2.5-flash",
             temperature=0.1,
             google_api_key=google_key,
-            response_mime_type="application/json"
+            response_mime_type="application/json",
         )
-        
+
         prompt = AUDIT_PROMPT.format(source_code=source_code)
         response = model.invoke([HumanMessage(content=prompt)])
-        
+
         # Verify JSON
         report = json.loads(response.content)
         report_path = os.path.join(root_dir, "audit_report.json")
-        
+
         # Save Report
         with open(report_path, "w", encoding="utf-8") as f:
             json.dump(report, f, indent=2)
-            
-        logger.info(f"Audit completed. Compliance Score: {report.get('compliance_score', 0.0)}")
+
+        logger.info(
+            f"Audit completed. Compliance Score: {report.get('compliance_score', 0.0)}"
+        )
         logger.info(f"Audit report saved at: {report_path}")
-        
+
         # Print findings summary
         findings = report.get("findings", [])
         if findings:
             logger.warning(f"Auditor found {len(findings)} issues in codebase:")
             for f in findings:
-                logger.warning(f"  [{f['severity']}] {f['file']} ({f['guideline']}): {f['description']}")
+                logger.warning(
+                    f"  [{f['severity']}] {f['file']} ({f['guideline']}): {f['description']}"
+                )
         else:
-            logger.info("Auditor found NO compliance or code quality issues. 100% compliant!")
-            
+            logger.info(
+                "Auditor found NO compliance or code quality issues. 100% compliant!"
+            )
+
     except Exception as e:
         logger.error(f"Error executing Auditor Agent LLM validation: {e}")
+
 
 if __name__ == "__main__":
     run_audit()

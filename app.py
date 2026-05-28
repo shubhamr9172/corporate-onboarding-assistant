@@ -10,6 +10,7 @@ from langchain_core.tracers.context import collect_runs
 
 # Initialize logger configuration
 from utils.logger_config import setup_logging
+
 setup_logging()
 logger = logging.getLogger("app.ui")
 
@@ -20,6 +21,7 @@ load_dotenv(dotenv_path=dotenv_path)
 
 # Fast-fail configuration check on startup
 from utils.config_check import check_configuration
+
 if not check_configuration():
     st.error("Startup Configuration Failed. Please check logs for details.")
     st.stop()
@@ -35,9 +37,7 @@ MAX_INPUT_LENGTH = 2000
 
 # Setup Streamlit page configuration
 st.set_page_config(
-    page_title="Corporate Onboarding Assistant V2",
-    page_icon="🤖",
-    layout="wide"
+    page_title="Corporate Onboarding Assistant V2", page_icon="🤖", layout="wide"
 )
 
 # ==============================================================================
@@ -52,13 +52,15 @@ except FileNotFoundError:
     st.error("Authentication configuration file not found. Contact your administrator.")
     st.stop()
 
-cookie_key = os.getenv("AUTH_COOKIE_KEY", "onboardai_v2_secret_cookie_key_change_in_prod")
+cookie_key = os.getenv(
+    "AUTH_COOKIE_KEY", "onboardai_v2_secret_cookie_key_change_in_prod"
+)
 
 authenticator = stauth.Authenticate(
     auth_config["credentials"],
     auth_config["cookie"]["name"],
     cookie_key,
-    auth_config["cookie"]["expiry_days"]
+    auth_config["cookie"]["expiry_days"],
 )
 authenticator.login(location="main", key="login_main")
 authentication_status = st.session_state.get("authentication_status")
@@ -79,6 +81,7 @@ logger.info(f"Authenticated user: {username} ({name})")
 # LOAD GRADIENT AURORA THEME
 # ==============================================================================
 
+
 def load_aurora_theme():
     """Load the Gradient Aurora CSS theme from styles directory."""
     css_path = os.path.join(os.path.dirname(__file__), "styles", "aurora_theme.css")
@@ -87,14 +90,19 @@ def load_aurora_theme():
             css = f.read()
         st.markdown(f"<style>{css}</style>", unsafe_allow_html=True)
     except FileNotFoundError:
-        logger.warning("Aurora theme CSS not found — falling back to default Streamlit theme.")
+        logger.warning(
+            "Aurora theme CSS not found — falling back to default Streamlit theme."
+        )
+
 
 load_aurora_theme()
+
 
 # Load graph application once
 @st.cache_resource
 def get_graph():
     return create_onboarding_graph()
+
 
 app = get_graph()
 
@@ -114,13 +122,13 @@ if "topics_covered" not in st.session_state:
         "Benefits": False,
         "IT Setup": False,
         "Team": False,
-        "Payroll": False
+        "Payroll": False,
     }
 if "token_usage" not in st.session_state:
     st.session_state.token_usage = {
         "input_tokens": 0,
         "output_tokens": 0,
-        "total_cost_usd": 0.0
+        "total_cost_usd": 0.0,
     }
 if "feedback_submitted" not in st.session_state:
     st.session_state.feedback_submitted = set()
@@ -128,6 +136,7 @@ if "feedback_submitted" not in st.session_state:
 # ==============================================================================
 # HELPER: COMPUTE PROGRESS
 # ==============================================================================
+
 
 def _compute_progress():
     """Return (completed_count, total_count, percentage)."""
@@ -137,22 +146,24 @@ def _compute_progress():
     pct = int((done / total) * 100) if total else 0
     return done, total, pct
 
+
 # ==============================================================================
 # SIDEBAR — GRADIENT AURORA EDITION
 # ==============================================================================
 
 # Topic display names and Material Symbols icons for the step tracker
 TOPIC_META = {
-    "Policy":   ("Policies",      "policy"),
-    "Benefits": ("Benefits",      "card_giftcard"),
-    "IT Setup": ("IT Setup",      "laptop_mac"),
-    "Team":     ("Team Sync",     "groups"),
-    "Payroll":  ("Payroll",       "payments"),
+    "Policy": ("Policies", "policy"),
+    "Benefits": ("Benefits", "card_giftcard"),
+    "IT Setup": ("IT Setup", "laptop_mac"),
+    "Team": ("Team Sync", "groups"),
+    "Payroll": ("Payroll", "payments"),
 }
 
 with st.sidebar:
     # ── Brand Header ──
-    st.markdown("""<div class="aurora-brand">
+    st.markdown(
+        """<div class="aurora-brand">
     <div class="aurora-logo">
         <span class="material-symbols-outlined material-filled" style="color: white; font-size: 1.25rem;">waves</span>
     </div>
@@ -160,25 +171,30 @@ with st.sidebar:
         <div class="aurora-brand-name">OnboardAI</div>
         <div class="aurora-brand-sub">Corporate Assistant</div>
     </div>
-</div>""", unsafe_allow_html=True)
+</div>""",
+        unsafe_allow_html=True,
+    )
 
     # ── User Card ──
     role_display = st.session_state.user_role.capitalize()
     initials = role_display[0].upper()
-    st.markdown(f"""<div class="aurora-user-card">
+    st.markdown(
+        f"""<div class="aurora-user-card">
     <div class="aurora-avatar">{initials}</div>
     <div class="aurora-user-info">
         <span class="aurora-user-name">New Hire</span>
         <span class="aurora-role-badge">{role_display}</span>
     </div>
-</div>""", unsafe_allow_html=True)
+</div>""",
+        unsafe_allow_html=True,
+    )
 
     # ── Role selector (functional) ──
     selected_role = st.selectbox(
         "Switch Role",
         options=["joinee", "manager", "HR"],
         index=["joinee", "manager", "HR"].index(st.session_state.user_role),
-        label_visibility="collapsed"
+        label_visibility="collapsed",
     )
     if selected_role != st.session_state.user_role:
         st.session_state.user_role = selected_role
@@ -200,11 +216,11 @@ with st.sidebar:
         if completed:
             state_cls = "done"
             status_html = '<span class="material-symbols-outlined nav-status" style="font-size: 1rem;">check_circle</span>'
-            icon_style = 'style="font-variation-settings: \'FILL\' 1;"'
+            icon_style = "style=\"font-variation-settings: 'FILL' 1;\""
         elif key == first_incomplete:
             state_cls = "current"
             status_html = '<div class="pulse-dot"></div>'
-            icon_style = 'style="font-variation-settings: \'FILL\' 1;"'
+            icon_style = "style=\"font-variation-settings: 'FILL' 1;\""
         else:
             state_cls = "upcoming"
             status_html = ""
@@ -218,7 +234,8 @@ with st.sidebar:
     {status_html}
 </div>"""
 
-    st.markdown(f"""<div class="aurora-progress-bar-wrap" style="margin-bottom: 0.75rem;">
+    st.markdown(
+        f"""<div class="aurora-progress-bar-wrap" style="margin-bottom: 0.75rem;">
     <div class="aurora-progress-row">
         <span class="aurora-progress-label">Journey Progress</span>
         <span class="aurora-progress-pct">{pct}%</span>
@@ -227,13 +244,19 @@ with st.sidebar:
         <div class="aurora-progress-fill" style="width: {pct}%;"></div>
     </div>
 </div>
-{nav_items_html}""", unsafe_allow_html=True)
+{nav_items_html}""",
+        unsafe_allow_html=True,
+    )
 
     # ── Usage Insights ──
-    total_tokens = st.session_state.token_usage["input_tokens"] + st.session_state.token_usage["output_tokens"]
+    total_tokens = (
+        st.session_state.token_usage["input_tokens"]
+        + st.session_state.token_usage["output_tokens"]
+    )
     cost = st.session_state.token_usage["total_cost_usd"]
 
-    st.markdown(f"""<div class="aurora-section-header" style="margin-top: 0.75rem;">
+    st.markdown(
+        f"""<div class="aurora-section-header" style="margin-top: 0.75rem;">
     <span class="icon">📊</span> Insights
 </div>
 <div class="aurora-metrics-row">
@@ -245,7 +268,9 @@ with st.sidebar:
         <div class="aurora-metric-label">Cost</div>
         <div class="aurora-metric-value secondary">${cost:.5f}</div>
     </div>
-</div>""", unsafe_allow_html=True)
+</div>""",
+        unsafe_allow_html=True,
+    )
 
     # Warn user if cost approaches limits
     if cost >= 0.40:
@@ -256,6 +281,7 @@ with st.sidebar:
         with st.spinner("Re-indexing documents folder..."):
             try:
                 from rag.ingest import run_ingestion
+
                 run_ingestion()
                 st.success("Knowledge base refreshed!")
                 st.rerun()
@@ -270,18 +296,29 @@ with st.sidebar:
             db_path = os.path.join(root_dir, "onboarding_history.db")
             if os.path.exists(db_path):
                 import sqlite3
+
                 conn = sqlite3.connect(db_path)
                 cursor = conn.cursor()
                 # Prune current thread history
-                ALLOWED_TABLES = {"checkpoints", "checkpoint_blobs", "checkpoint_writes", "writes"}
+                ALLOWED_TABLES = {
+                    "checkpoints",
+                    "checkpoint_blobs",
+                    "checkpoint_writes",
+                    "writes",
+                }
                 for t in ALLOWED_TABLES:
                     try:
-                        cursor.execute(f"DELETE FROM {t} WHERE thread_id = ?", (st.session_state.session_id,))
+                        cursor.execute(
+                            f"DELETE FROM {t} WHERE thread_id = ?",
+                            (st.session_state.session_id,),
+                        )
                     except Exception as e:
                         logger.warning(f"Could not clear table '{t}' during reset: {e}")
                 conn.commit()
                 conn.close()
-                logger.info(f"Chat thread {st.session_state.session_id} checkpoint wiped.")
+                logger.info(
+                    f"Chat thread {st.session_state.session_id} checkpoint wiped."
+                )
         except Exception as e:
             logger.error(f"Error purging checkpoints during reset: {e}")
 
@@ -289,10 +326,16 @@ with st.sidebar:
         st.session_state.session_id = str(uuid.uuid4())
         st.session_state.messages = []
         st.session_state.topics_covered = {
-            "Policy": False, "Benefits": False, "IT Setup": False, "Team": False, "Payroll": False
+            "Policy": False,
+            "Benefits": False,
+            "IT Setup": False,
+            "Team": False,
+            "Payroll": False,
         }
         st.session_state.token_usage = {
-            "input_tokens": 0, "output_tokens": 0, "total_cost_usd": 0.0
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "total_cost_usd": 0.0,
         }
         st.session_state.feedback_submitted = set()
         st.success("Session restarted successfully!")
@@ -300,12 +343,15 @@ with st.sidebar:
 
     # ── Session ID (footer) ──
     short_id = st.session_state.session_id[:8]
-    st.markdown(f"""<div style="padding-top: 0.75rem;">
+    st.markdown(
+        f"""<div style="padding-top: 0.75rem;">
     <div class="aurora-session-badge">
         <div class="aurora-session-dot"></div>
         Session {short_id}
     </div>
-</div>""", unsafe_allow_html=True)
+</div>""",
+        unsafe_allow_html=True,
+    )
 
 # ==============================================================================
 # MAIN CHAT INTERFACE — GRADIENT AURORA EDITION
@@ -314,7 +360,8 @@ with st.sidebar:
 # ── Hero Section (shown only when no messages yet) ──
 if not st.session_state.messages:
     done, total, pct = _compute_progress()
-    st.markdown(f"""<div class="aurora-hero">
+    st.markdown(
+        f"""<div class="aurora-hero">
     <div class="aurora-hero-greeting">Good Morning!</div>
     <div class="aurora-hero-sub">
         Your onboarding journey continues. <strong>{done} of {total}</strong> topics completed.
@@ -334,12 +381,17 @@ if not st.session_state.messages:
         <span class="aurora-chip-text">Tell me about health insurance</span>
     </div>
 </div>
-<div class="aurora-footer">Powered by OnboardAI &bull; Private &amp; Secure</div>""", unsafe_allow_html=True)
+<div class="aurora-footer">Powered by OnboardAI &bull; Private &amp; Secure</div>""",
+        unsafe_allow_html=True,
+    )
 else:
     # Compact header when chat is active
-    st.markdown("""<div class="aurora-compact-header">
+    st.markdown(
+        """<div class="aurora-compact-header">
     <span class="aurora-compact-title">OnboardAI</span>
-</div>""", unsafe_allow_html=True)
+</div>""",
+        unsafe_allow_html=True,
+    )
 
 # ── Render Chat History ──
 for idx, msg in enumerate(st.session_state.messages):
@@ -367,7 +419,7 @@ for idx, msg in enumerate(st.session_state.messages):
                             query=st.session_state.messages[idx - 1]["content"],
                             answer=msg["content"],
                             rating=1,
-                            run_id=msg.get("run_id")
+                            run_id=msg.get("run_id"),
                         )
                         st.session_state.feedback_submitted.add(msg_id)
                         st.success("Thanks!")
@@ -379,7 +431,10 @@ for idx, msg in enumerate(st.session_state.messages):
                 # Handle text comment review box on thumbs-down
                 if st.session_state.get(f"show_feedback_form_{msg_id}"):
                     with st.form(key=f"form_{msg_id}"):
-                        comment = st.text_input("Help us improve. What was wrong with this answer?", key=f"comment_{msg_id}")
+                        comment = st.text_input(
+                            "Help us improve. What was wrong with this answer?",
+                            key=f"comment_{msg_id}",
+                        )
                         submit = st.form_submit_button("Submit Feedback")
                         if submit:
                             log_user_feedback(
@@ -388,7 +443,7 @@ for idx, msg in enumerate(st.session_state.messages):
                                 answer=msg["content"],
                                 rating=-1,
                                 comment=comment,
-                                run_id=msg.get("run_id")
+                                run_id=msg.get("run_id"),
                             )
                             st.session_state.feedback_submitted.add(msg_id)
                             st.session_state[f"show_feedback_form_{msg_id}"] = False
@@ -404,28 +459,40 @@ if prompt := st.chat_input("Ask anything about your onboarding..."):
 
     # 1.0 Rate limit check
     if is_rate_limited(st.session_state.session_id):
-        st.session_state.messages.append({
-            "role": "assistant",
-            "content": "⏳ You're sending messages too quickly. Please wait a moment before trying again."
-        })
+        st.session_state.messages.append(
+            {
+                "role": "assistant",
+                "content": "⏳ You're sending messages too quickly. Please wait a moment before trying again.",
+            }
+        )
         with st.chat_message("assistant"):
-            st.warning("Rate limit exceeded. Please wait before sending another message.")
+            st.warning(
+                "Rate limit exceeded. Please wait before sending another message."
+            )
 
     # 1.5 Input length guard
     elif len(prompt) > MAX_INPUT_LENGTH:
-        st.session_state.messages.append({
-            "role": "assistant",
-            "content": f"🚨 Your message exceeds the maximum length of {MAX_INPUT_LENGTH} characters. Please shorten it."
-        })
+        st.session_state.messages.append(
+            {
+                "role": "assistant",
+                "content": f"🚨 Your message exceeds the maximum length of {MAX_INPUT_LENGTH} characters. Please shorten it.",
+            }
+        )
         with st.chat_message("assistant"):
-            st.warning(f"Message exceeds maximum length of {MAX_INPUT_LENGTH} characters.")
+            st.warning(
+                f"Message exceeds maximum length of {MAX_INPUT_LENGTH} characters."
+            )
 
     else:
         # 2. Run Input Guardrails
-        is_safe, reason = validate_input(prompt, st.session_state.token_usage["total_cost_usd"])
+        is_safe, reason = validate_input(
+            prompt, st.session_state.token_usage["total_cost_usd"]
+        )
 
         if not is_safe:
-            st.session_state.messages.append({"role": "assistant", "content": f"🚨 Safety Block: {reason}"})
+            st.session_state.messages.append(
+                {"role": "assistant", "content": f"🚨 Safety Block: {reason}"}
+            )
             with st.chat_message("assistant"):
                 st.error(f"Safety Block: {reason}")
         else:
@@ -436,9 +503,11 @@ if prompt := st.chat_input("Ask anything about your onboarding..."):
             graph_input = {
                 "current_message": prompt,
                 "user_role": st.session_state.user_role,
-                "conversation_history": st.session_state.messages[:-1], # Keep previous messages
+                "conversation_history": st.session_state.messages[
+                    :-1
+                ],  # Keep previous messages
                 "topics_covered": st.session_state.topics_covered,
-                "token_usage": st.session_state.token_usage
+                "token_usage": st.session_state.token_usage,
             }
 
             with st.chat_message("assistant"):
@@ -447,30 +516,47 @@ if prompt := st.chat_input("Ask anything about your onboarding..."):
                         # Run within LangChain collect_runs callback context to extract run IDs
                         with collect_runs() as cb:
                             final_state = app.invoke(graph_input, config)
-                            run_id = str(cb.traced_runs[0].id) if cb.traced_runs else None
+                            run_id = (
+                                str(cb.traced_runs[0].id) if cb.traced_runs else None
+                            )
 
                         # 4. Extract outputs
-                        raw_response = final_state.get("final_response", "I'm having trouble formulating a response.")
+                        raw_response = final_state.get(
+                            "final_response",
+                            "I'm having trouble formulating a response.",
+                        )
                         source_docs = final_state.get("source_docs") or []
 
                         # 5. Run Output Guardrails
-                        is_output_safe, checked_response = validate_output(raw_response, source_docs)
+                        is_output_safe, checked_response = validate_output(
+                            raw_response, source_docs
+                        )
 
                         if not is_output_safe:
-                            checked_response = "Response blocked: System safety filter triggered."
+                            checked_response = (
+                                "Response blocked: System safety filter triggered."
+                            )
                             source_docs = []
 
                         # 6. Update local session states
-                        st.session_state.topics_covered = final_state.get("topics_covered") or st.session_state.topics_covered
-                        st.session_state.token_usage = final_state.get("token_usage") or st.session_state.token_usage
+                        st.session_state.topics_covered = (
+                            final_state.get("topics_covered")
+                            or st.session_state.topics_covered
+                        )
+                        st.session_state.token_usage = (
+                            final_state.get("token_usage")
+                            or st.session_state.token_usage
+                        )
 
                         # Store messages
-                        st.session_state.messages.append({
-                            "role": "assistant",
-                            "content": checked_response,
-                            "sources": source_docs,
-                            "run_id": run_id
-                        })
+                        st.session_state.messages.append(
+                            {
+                                "role": "assistant",
+                                "content": checked_response,
+                                "sources": source_docs,
+                                "run_id": run_id,
+                            }
+                        )
 
                         # Force rerun to cleanly paint feedback blocks
                         st.rerun()
@@ -478,11 +564,15 @@ if prompt := st.chat_input("Ask anything about your onboarding..."):
                     except Exception as e:
                         logger.critical(
                             f"ALERT:GRAPH_FAILURE session={st.session_state.session_id} error={e}",
-                            exc_info=True
+                            exc_info=True,
                         )
-                        st.error("I experienced a technical issue processing your request. Our team has been automatically alerted.")
-                        st.session_state.messages.append({
-                            "role": "assistant",
-                            "content": "I encountered a technical issue. Our support team has been automatically notified and will follow up."
-                        })
+                        st.error(
+                            "I experienced a technical issue processing your request. Our team has been automatically alerted."
+                        )
+                        st.session_state.messages.append(
+                            {
+                                "role": "assistant",
+                                "content": "I encountered a technical issue. Our support team has been automatically notified and will follow up.",
+                            }
+                        )
                         st.rerun()

@@ -1,13 +1,14 @@
 import pytest
 from utils.progress import update_topics_covered
 
+
 def test_update_topics_covered():
     initial_topics = {
         "Policy": False,
         "Benefits": False,
         "IT Setup": False,
         "Team": False,
-        "Payroll": False
+        "Payroll": False,
     }
 
     # Policy match
@@ -21,7 +22,9 @@ def test_update_topics_covered():
     assert topics2["Policy"] is False
 
     # Multiple match
-    topics3 = update_topics_covered("How do I request a laptop and check my salary?", initial_topics)
+    topics3 = update_topics_covered(
+        "How do I request a laptop and check my salary?", initial_topics
+    )
     assert topics3["IT Setup"] is True
     assert topics3["Payroll"] is True
     assert topics3["Policy"] is False
@@ -36,7 +39,7 @@ def test_update_topics_covered():
         "Benefits": False,
         "IT Setup": False,
         "Team": False,
-        "Payroll": False
+        "Payroll": False,
     }
     topics5 = update_topics_covered("How do I setup VPN?", existing_topics)
     assert topics5["Policy"] is True

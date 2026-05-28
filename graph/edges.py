@@ -3,6 +3,7 @@ from graph.state import AgentState
 
 logger = logging.getLogger("app.edges")
 
+
 def route_after_cache(state: AgentState) -> str:
     """Routes based on L1/L2 cache hit/miss."""
     decision = state.get("route_decision", "cache_miss")
@@ -13,6 +14,7 @@ def route_after_cache(state: AgentState) -> str:
         logger.info("Routing: Cache Miss -> intent_node")
         return "intent_node"
 
+
 def route_after_intent(state: AgentState) -> str:
     """Routes based on intent classification result."""
     intent = state.get("intent", "General")
@@ -22,6 +24,7 @@ def route_after_intent(state: AgentState) -> str:
     else:
         logger.info(f"Routing: Intent is {intent} -> rag_node")
         return "rag_node"
+
 
 def route_after_confidence(state: AgentState) -> str:
     """Routes based on answer confidence evaluation."""
